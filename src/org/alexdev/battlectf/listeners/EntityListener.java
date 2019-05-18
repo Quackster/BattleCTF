@@ -41,14 +41,15 @@ public class EntityListener implements Listener {
 
     @EventHandler
     public void onEntityExplodeEvent(EntityExplodeEvent event){
-        boolean explodingEntityInArena = ArenaManager.getInstance().hasArena(event.getLocation());
+        Arena source = ArenaManager.getInstance().getArenaByLocation(event.getLocation());
+        boolean explodingEntityInArena = source != null;
 
         if (explodingEntityInArena) {
             for (Iterator<Block> it = event.blockList().iterator(); it.hasNext();) {
                 Block block = it.next();
                 Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
 
-                if (arena == null) {
+                if (arena == null || source != arena) {
                     it.remove();
                 } else if (arena.isBorder(block.getLocation())) {
                     it.remove();

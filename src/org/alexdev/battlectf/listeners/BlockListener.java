@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
@@ -106,7 +107,8 @@ public class BlockListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockExplodeEvent(BlockExplodeEvent event){
+    public void onBlockExplode(BlockExplodeEvent event){
+        Arena source = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
         boolean explodingBlockInArena = ArenaManager.getInstance().hasArena(event.getBlock().getLocation());
 
         if (explodingBlockInArena) {
@@ -114,7 +116,7 @@ public class BlockListener implements Listener {
                 Block block = it.next();
                 Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
 
-                if (arena == null) {
+                if (arena == null || source != arena) {
                     it.remove();
                 } else if (arena.isBorder(block.getLocation())) {
                     it.remove();
@@ -129,6 +131,16 @@ public class BlockListener implements Listener {
                     it.remove();
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockFromTo(BlockFromToEvent event){
+        Arena source = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
+        Arena destination = ArenaManager.getInstance().getArenaByLocation(event.getToBlock().getLocation());
+
+        if (source != destination) {
+            event.setCancelled(true);
         }
     }
 }
