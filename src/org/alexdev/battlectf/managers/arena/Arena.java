@@ -7,17 +7,45 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Arena {
     private String name;
     private String world;
     private Location firstPoint;
     private Location secondPoint;
 
+    private Map<ArenaFlags, Boolean> flagsMap;
+
     public Arena(String name, String world, Location firstPoint, Location secondPoint) {
         this.name = name;
         this.world = world;
         this.firstPoint = firstPoint;
         this.secondPoint = secondPoint;
+        this.flagsMap = new ConcurrentHashMap<ArenaFlags, Boolean>() {{
+            put(ArenaFlags.ALLOW_BLOCK_BREAKING, false);
+            put(ArenaFlags.ALLOW_BLOCK_PLACING, false);
+            put(ArenaFlags.ALLOW_ANIMAL_SPAWNING, false);
+            put(ArenaFlags.ALLOW_MOB_SPAWNING, false);
+            put(ArenaFlags.ALLOW_EXPLOSIONS, true);
+            put(ArenaFlags.ALLOW_LAVA_FLOW, true);
+            put(ArenaFlags.ALLOW_WATER_FLOW, false);
+        }};
+    }
+
+    /**
+     * Get if the arena has a flag.
+     *
+     * @param arenaFlags the flag to check
+     * @return true, if successful
+     */
+    public boolean hasFlag(ArenaFlags arenaFlags) {
+        if (this.flagsMap.containsKey(arenaFlags)) {
+            return this.flagsMap.get(arenaFlags);
+        }
+
+        return false;
     }
 
     /**
@@ -78,5 +106,14 @@ public class Arena {
      */
     public Location getSecondPoint() {
         return secondPoint;
+    }
+
+    /**
+     * Get the flags for the arena.
+     *
+     * @return the flags
+     */
+    public Map<ArenaFlags, Boolean> getFlags() {
+        return flagsMap;
     }
 }

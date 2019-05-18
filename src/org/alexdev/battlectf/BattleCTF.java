@@ -3,6 +3,7 @@ package org.alexdev.battlectf;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.alexdev.battlectf.commands.CommandHandler;
 import org.alexdev.battlectf.listeners.BlockListener;
+import org.alexdev.battlectf.listeners.EntityListener;
 import org.alexdev.battlectf.listeners.InteractListener;
 import org.alexdev.battlectf.listeners.PlayerListener;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
@@ -70,6 +71,7 @@ public class BattleCTF extends JavaPlugin {
      * Register the listeners.
      */
     private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new EntityListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new InteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);

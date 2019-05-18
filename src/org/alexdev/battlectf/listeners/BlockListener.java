@@ -1,5 +1,7 @@
 package org.alexdev.battlectf.listeners;
 
+import org.alexdev.battlectf.managers.arena.Arena;
+import org.alexdev.battlectf.managers.arena.ArenaFlags;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
@@ -7,6 +9,7 @@ import org.alexdev.battlectf.util.LocaleUtil;
 import org.alexdev.battlectf.util.attributes.BattleAttribute;
 import org.alexdev.battlectf.util.Util;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Animals;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -34,6 +37,14 @@ public class BlockListener implements Listener {
         boolean isBuildMode = battlePlayer.getOrDefault(BattleAttribute.BUILD, false);
 
         if (ArenaManager.getInstance().hasArena(event.getBlock().getLocation())) {
+            Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
+
+            if (!arena.hasFlag(ArenaFlags.ALLOW_BLOCK_BREAKING)) {
+                event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotBuildArenaSelection());
+                event.setCancelled(true);
+                return;
+            }
+
             if (!isBuildMode) {
                 event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotBreakBlocksInArena());
                 event.setCancelled(true);
@@ -61,6 +72,14 @@ public class BlockListener implements Listener {
         boolean isBuildMode = battlePlayer.getOrDefault(BattleAttribute.BUILD, false);
 
         if (ArenaManager.getInstance().hasArena(event.getBlockPlaced().getLocation())) {
+            Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlockPlaced().getLocation());
+
+            if (!arena.hasFlag(ArenaFlags.ALLOW_BLOCK_PLACING)) {
+                event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotPlaceBlocksInArena());
+                event.setCancelled(true);
+                return;
+            }
+
             if (!isBuildMode) {
                 event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotPlaceBlocksInArena());
                 event.setCancelled(true);

@@ -12,7 +12,7 @@ public class LocaleUtil {
     }
 
     public String getSecondPositionSelected(Location location) {
-        return ChatColor.AQUA + "First position for arena selection at " + Util.describeLocation(location);
+        return ChatColor.AQUA + "Second position for arena selection at " + Util.describeLocation(location);
     }
 
     public String getErrorOccurred() {
@@ -32,11 +32,11 @@ public class LocaleUtil {
     }
 
     public String getBuildModeToggle(boolean mode) {
-        return ChatColor.GREEN + "Build mode in arena is set to " + (!mode ? "true" : "false");
+        return ChatColor.GREEN + "Build mode in arena is set to " + (mode ? "true" : "false");
     }
 
     public String getSelectingToggle(boolean mode) {
-        return ChatColor.GREEN + "Selecting arena is set to " + (!mode ? "true" : "false");
+        return ChatColor.GREEN + "Selecting arena is set to " + (mode ? "true" : "false");
     }
 
     public String getNoNameProvided() {

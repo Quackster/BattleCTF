@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,6 +76,15 @@ public class ArenaManager {
             Location secondLocation = new Location(world, maxX, maxY, maxZ);
 
             Arena arena = new Arena(name, firstLocation.getWorld().getName(), firstLocation, secondLocation);
+
+            List<String> flags = new ArrayList<>();
+            arenaConfig.getList("Flags", flags);
+
+            for (String flag : flags) {
+                String[] detail = flag.split(":");
+                arena.getFlags().put(ArenaFlags.valueOf(detail[0]), detail[1].equalsIgnoreCase("true"));
+            }
+
             this.arenaMap.put(name, arena);
         }
     }
@@ -102,6 +113,14 @@ public class ArenaManager {
         arenaDetails.set("Name", name);
         arenaDetails.set("World", firstPoint.getWorld().getName());
         arenaDetails.set("Author", player.getName());
+
+        List<String> flags = new ArrayList<>();
+
+        for (Map.Entry<ArenaFlags, Boolean> kvp : arena.getFlags().entrySet()) {
+            flags.add(kvp.getKey().name() + ":" + (kvp.getValue() ? "true" : "false"));
+        }
+
+        arenaDetails.set("Flags", flags);
 
         ConfigurationSection regionConfig = conf.createSection("Region");
         regionConfig.set("MinX", firstPoint.getBlockX());

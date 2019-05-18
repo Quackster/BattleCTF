@@ -15,10 +15,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-public class InteractListener  implements Listener {
+public class InteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if(event.getHand() == EquipmentSlot.HAND) {
+        if (event.getHand() == EquipmentSlot.HAND) {
             return;
         }
 
