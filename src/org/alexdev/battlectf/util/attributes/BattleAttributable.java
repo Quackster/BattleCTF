@@ -1,4 +1,4 @@
-package org.alexdev.battlectf.util;
+package org.alexdev.battlectf.util.attributes;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

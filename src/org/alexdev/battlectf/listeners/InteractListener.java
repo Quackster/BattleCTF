@@ -2,7 +2,8 @@ package org.alexdev.battlectf.listeners;
 
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
-import org.alexdev.battlectf.util.BattleAttribute;
+import org.alexdev.battlectf.util.LocaleUtil;
+import org.alexdev.battlectf.util.attributes.BattleAttribute;
 import org.alexdev.battlectf.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -31,7 +32,7 @@ public class InteractListener  implements Listener {
             boolean isArenaSelect = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA, false);
 
             if (isArenaSelect) {
-                event.getPlayer().sendMessage(ChatColor.AQUA + "Second position for arena selection at " + Util.describeLocation(event.getClickedBlock().getLocation()));
+                event.getPlayer().sendMessage(LocaleUtil.getInstance().getSecondPositionSelected(event.getClickedBlock().getLocation()));
                 event.setCancelled(true);
 
                 battlePlayer.set(BattleAttribute.SELECT_ARENA_SECOND, event.getClickedBlock().getLocation());

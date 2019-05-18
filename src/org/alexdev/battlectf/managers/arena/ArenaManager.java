@@ -73,7 +73,7 @@ public class ArenaManager {
             Location firstLocation = new Location(world, minX, minY, minZ);
             Location secondLocation = new Location(world, maxX, maxY, maxZ);
 
-            Arena arena = new Arena(name, firstLocation, secondLocation);
+            Arena arena = new Arena(name, firstLocation.getWorld().getName(), firstLocation, secondLocation);
             this.arenaMap.put(name, arena);
         }
     }
@@ -88,7 +88,7 @@ public class ArenaManager {
      * @return the arena instance
      */
     public Arena createArena(Player player, String name, Location firstPoint, Location secondPoint) throws IOException {
-        Arena arena = new Arena(name, firstPoint, secondPoint);
+        Arena arena = new Arena(name, firstPoint.getWorld().getName(), firstPoint, secondPoint);
 
         File arenaConfig = Paths.get(BattleCTF.getInstance().getDataFolder().getAbsolutePath(), "arenas", name + ".yml").toFile();
 
@@ -127,6 +127,32 @@ public class ArenaManager {
         this.arenaMap.put(name, arena);
 
         return arena;
+    }
+
+    /**
+     * Get if a location is inside an arena.
+     *
+     * @param location the location to check
+     * @return true, if successful
+     */
+    public boolean hasArena(Location location) {
+        return this.getArenaByLocation(location) != null;
+    }
+
+    /**
+     * Gets the arena by location specified.
+     *
+     * @param location the arena
+     * @return arena, null if not found
+     */
+    public Arena getArenaByLocation(Location location) {
+        for (Arena arena : this.arenaMap.values()) {
+            if (arena.hasLocation(location)) {
+                return arena;
+            }
+        }
+
+        return null;
     }
 
     /**

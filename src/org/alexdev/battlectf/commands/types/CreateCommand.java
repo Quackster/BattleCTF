@@ -3,7 +3,8 @@ package org.alexdev.battlectf.commands.types;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.schematic.SchematicManager;
-import org.alexdev.battlectf.util.BattleAttribute;
+import org.alexdev.battlectf.util.LocaleUtil;
+import org.alexdev.battlectf.util.attributes.BattleAttribute;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ public class CreateCommand {
         String name = args[1];
 
         if (name.isEmpty()) {
-            player.sendMessage(ChatColor.RED + "There was no name provided for the arena");
+            player.sendMessage(LocaleUtil.getInstance().getNoNameProvided());
             return true;
         }
 
@@ -28,22 +29,21 @@ public class CreateCommand {
         Location second = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA_SECOND, null);
 
         if (first == null) {
-            player.sendMessage(ChatColor.RED + "You did not select the first position for the arena");
+            player.sendMessage(LocaleUtil.getInstance().getNoFirstPosition());
             return true;
         }
 
         if (second == null) {
-            player.sendMessage(ChatColor.RED + "You did not select the second position for the arena");
+            player.sendMessage(LocaleUtil.getInstance().getNoSecondPosition());
             return true;
         }
 
         if (SchematicManager.save(player, name, first, second)) {
-            //SchematicManager.paste(player, SchematicManager.load(player, name), region.getMaximumPoint().getBlockX(), region.getMaximumPoint().getBlockY(), region.getMaximumPoint().getBlockZ());
             try {
                 ArenaManager.getInstance().createArena(player, name, first, second);
-                player.sendMessage(ChatColor.YELLOW + "Arena '" + name + "' has been created");
+                player.sendMessage(LocaleUtil.getInstance().getArenaSaved(name));
             } catch (IOException e) {
-                player.sendMessage(ChatColor.RED + "Error occurred");
+                player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
             }
         }
 

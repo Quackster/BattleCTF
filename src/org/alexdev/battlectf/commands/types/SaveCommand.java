@@ -4,7 +4,7 @@ import org.alexdev.battlectf.managers.arena.Arena;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.schematic.SchematicManager;
-import org.alexdev.battlectf.util.BattleAttribute;
+import org.alexdev.battlectf.util.LocaleUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ public class SaveCommand {
         String name = args[1];
 
         if (name.isEmpty()) {
-            player.sendMessage(ChatColor.RED + "There was no name provided for the arena");
+            player.sendMessage(LocaleUtil.getInstance().getNoNameProvided());
             return true;
         }
 
@@ -33,12 +33,12 @@ public class SaveCommand {
         if (SchematicManager.save(player, name, first, second)) {
             try {
                 ArenaManager.getInstance().createArena(player, name, first, second);
-                player.sendMessage(ChatColor.GREEN + "Arena '" + name + "' has been saved");
+                player.sendMessage(LocaleUtil.getInstance().getArenaSaved(name));
             } catch (IOException e) {
-                player.sendMessage(ChatColor.RED + "Error occurred");
+                player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
             }
         } else {
-            player.sendMessage(ChatColor.RED + "Error occurred");
+            player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
         }
 
         return true;
