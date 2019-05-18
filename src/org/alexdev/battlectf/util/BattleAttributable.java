@@ -10,32 +10,31 @@ public abstract class BattleAttributable {
         this.attributeMap = new ConcurrentHashMap<>();
     }
 
-    public void setAttribute(BattleAttribute attributeKey, Object attributeValue) {
+    public void set(BattleAttribute attributeKey, Object attributeValue) {
         this.attributeMap.put(attributeKey, attributeValue);
     }
 
-    public Object getAttribute(BattleAttribute attributeKey) {
+    public <T> T get(BattleAttribute attributeKey) {
         if (!this.attributeMap.containsKey(attributeKey)) {
             return null;
         }
 
-        return this.attributeMap.get(attributeKey);
+        return (T)this.attributeMap.get(attributeKey);
     }
 
-    public <T> T resolve(BattleAttribute attributeKey, Class<T> type) {
+    public <T> T getOrDefault(BattleAttribute attributeKey, Object object) {
         if (!this.attributeMap.containsKey(attributeKey)) {
-            return null;
+            return object != null ? (T)object : null;
         }
 
-        Object member = this.attributeMap.get(attributeKey);
-        return type.cast(member);
+        return (T)this.attributeMap.get(attributeKey);
     }
 
-    public boolean hasAttribute(BattleAttribute attributeKey) {
+    public boolean has(BattleAttribute attributeKey) {
         return this.attributeMap.containsKey(attributeKey);
     }
 
-    public void removeAttribute(BattleAttribute attributeKey) {
+    public void remove(BattleAttribute attributeKey) {
         this.attributeMap.remove(attributeKey);
     }
 }

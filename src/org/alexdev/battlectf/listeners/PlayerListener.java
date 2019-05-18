@@ -12,7 +12,7 @@ import org.bukkit.event.player.*;
 public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        if (PlayerManager.getInstance().hasPlayer(event.getPlayer())) {
+        if (!PlayerManager.getInstance().hasPlayer(event.getPlayer())) {
             PlayerManager.getInstance().addPlayer(event.getPlayer());
         }
     }

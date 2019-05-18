@@ -1,12 +1,13 @@
 package org.alexdev.battlectf;
 
-import org.alexdev.battlectf.commands.Commands;
+import org.alexdev.battlectf.commands.CommandHandler;
 import org.alexdev.battlectf.listeners.BlockListener;
 import org.alexdev.battlectf.listeners.InteractListener;
 import org.alexdev.battlectf.listeners.PlayerListener;
 import org.alexdev.battlectf.managers.configuration.ConfigurationManager;
 import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -29,8 +30,13 @@ public class BattleCTF extends JavaPlugin {
         saveDefaultConfig();
         ConfigurationManager.getInstance().readConfig(getConfig());
 
-        CommandExecutor myCommands = new Commands();
-        getCommand("myplugin").setExecutor(myCommands);
+        // Command handling
+        CommandExecutor myCommands = new CommandHandler();
+        getCommand("battlectf").setExecutor(myCommands);
+
+        // Reload players
+        PlayerManager.getInstance().reloadPlayers();
+        this.logger.info("There are " + PlayerManager.getInstance().getPlayers().size() + " players stored");
 
         this.registerListeners();
         logger.info("Finished");
@@ -47,7 +53,7 @@ public class BattleCTF extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        PlayerManager.getInstance().getPlayers().clear();
     }
 
     /**
