@@ -1,0 +1,20 @@
+name: BattleCTF
+authors: [AlexTheAussie]
+version: 0.1
+main: org.alexdev.battlectf.BattleCTF
+
+commands:
+  myplugin:
+    description: myplugin command
+    aliases: [mp]
+    usage: |
+      /myplugin
+    permission: myplugin.admin
+
+permissions:
+  myplugin.use:
+    description: use myplugin
+    default: true
+  myplugin.admin:
+    description: myplugin admin features
+    default: op
