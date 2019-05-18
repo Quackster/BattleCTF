@@ -2,7 +2,9 @@ package org.alexdev.battlectf;
 
 import org.alexdev.battlectf.commands.Commands;
 import org.alexdev.battlectf.listeners.BlockListener;
+import org.alexdev.battlectf.listeners.PlayerListener;
 import org.alexdev.battlectf.managers.configuration.ConfigurationManager;
+import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +22,7 @@ public class BattleCTF extends JavaPlugin {
 
         // Load singletons
         ConfigurationManager.getInstance();
+        PlayerManager.getInstance();
 
         // Load configuration
         saveDefaultConfig();
@@ -37,6 +40,7 @@ public class BattleCTF extends JavaPlugin {
      */
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
     @Override
