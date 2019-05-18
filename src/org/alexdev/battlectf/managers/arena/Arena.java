@@ -3,10 +3,15 @@ package org.alexdev.battlectf.managers.arena;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.regions.RegionIntersection;
+import org.alexdev.battlectf.util.LocaleUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,6 +61,17 @@ public class Arena {
      */
     public boolean hasLocation(Location location) {
         return this.getCuboidRegion().contains(BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+    }
+
+    /**
+     * Get if the block is an arena border block.
+     *
+     * @param location the location to check
+     * @return true, if successful
+     */
+    public boolean isBorder(Location location) {
+        CuboidRegion cuboidRegion = this.getCuboidRegion();
+        return cuboidRegion.getFaces().contains(BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
     }
 
     /**

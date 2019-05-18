@@ -9,11 +9,16 @@ import org.alexdev.battlectf.util.LocaleUtil;
 import org.alexdev.battlectf.util.attributes.BattleAttribute;
 import org.alexdev.battlectf.util.Util;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+
+import java.util.Iterator;
 
 public class BlockListener implements Listener {
     @EventHandler
@@ -41,6 +46,12 @@ public class BlockListener implements Listener {
 
             if (!isBuildMode) {
                 if (!arena.hasFlag(ArenaFlags.ALLOW_BLOCK_BREAKING)) {
+                    event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotBreakBlocksInArena());
+                    event.setCancelled(true);
+                    return;
+                }
+
+                if (arena.isBorder(event.getBlock().getLocation())) {
                     event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotBreakBlocksInArena());
                     event.setCancelled(true);
                     return;
@@ -81,9 +92,42 @@ public class BlockListener implements Listener {
                     return;
                 }
 
+                if (arena.isBorder(event.getBlock().getLocation())) {
+                    event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotPlaceBlocksInArena());
+                    event.setCancelled(true);
+                    return;
+                }
+
                 event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotPlaceBlocksInArena());
                 event.setCancelled(true);
                 return;
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockExplodeEvent(BlockExplodeEvent event){
+        boolean explodingBlockInArena = ArenaManager.getInstance().hasArena(event.getBlock().getLocation());
+
+        if (explodingBlockInArena) {
+            for (Iterator<Block> it = event.blockList().iterator(); it.hasNext();) {
+                Block block = it.next();
+                Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
+
+                if (arena == null) {
+                    it.remove();
+                } else if (arena.isBorder(block.getLocation())) {
+                    it.remove();
+                }
+            }
+        } else {
+            for (Iterator<Block> it = event.blockList().iterator(); it.hasNext();) {
+                Block block = it.next();
+                Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
+
+                if (arena != null) {
+                    it.remove();
+                }
             }
         }
     }

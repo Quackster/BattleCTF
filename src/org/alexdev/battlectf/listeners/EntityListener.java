@@ -1,13 +1,19 @@
 package org.alexdev.battlectf.listeners;
 
+import org.alexdev.battlectf.BattleCTF;
 import org.alexdev.battlectf.managers.arena.Arena;
 import org.alexdev.battlectf.managers.arena.ArenaFlags;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
+import org.alexdev.battlectf.util.LocaleUtil;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+
+import java.util.Iterator;
 
 public class EntityListener implements Listener {
     @EventHandler
@@ -29,6 +35,33 @@ public class EntityListener implements Listener {
             if (!arena.hasFlag(ArenaFlags.ALLOW_MOB_SPAWNING)) {
                 event.setCancelled(true);
                 return;
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityExplodeEvent(EntityExplodeEvent event){
+        boolean explodingEntityInArena = ArenaManager.getInstance().hasArena(event.getLocation());
+
+        if (explodingEntityInArena) {
+            for (Iterator<Block> it = event.blockList().iterator(); it.hasNext();) {
+                Block block = it.next();
+                Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
+
+                if (arena == null) {
+                    it.remove();
+                } else if (arena.isBorder(block.getLocation())) {
+                    it.remove();
+                }
+            }
+        } else {
+            for (Iterator<Block> it = event.blockList().iterator(); it.hasNext();) {
+                Block block = it.next();
+                Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
+
+                if (arena != null) {
+                    it.remove();
+                }
             }
         }
     }
