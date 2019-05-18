@@ -26,11 +26,11 @@ public class PlayerManager {
     }
 
 
-    public boolean hasAttribute(Player player) {
+    public boolean hasPlayer(Player player) {
         return this.playerMap.containsKey(player.getUniqueId().toString());
     }
 
-    public void removeAttribute(Player player) {
+    public void removePlayer(Player player) {
         this.playerMap.remove(player.getUniqueId().toString());
     }
 

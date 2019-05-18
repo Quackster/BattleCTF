@@ -4,11 +4,11 @@ version: 0.1
 main: org.alexdev.battlectf.BattleCTF
 
 commands:
-  myplugin:
-    description: myplugin command
-    aliases: [mp]
+  battlectf:
+    description: The core plugin for handling many BattleCTF commands
+    aliases: [ctf]
     usage: |
-      /myplugin
+      /ctf [arguments]
     permission: myplugin.admin
 
 permissions:

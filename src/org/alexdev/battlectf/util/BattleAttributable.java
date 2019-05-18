@@ -4,17 +4,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BattleAttributable {
-    private Map<String, Object> attributeMap;
+    private Map<BattleAttribute, Object> attributeMap;
 
     public BattleAttributable() {
         this.attributeMap = new ConcurrentHashMap<>();
     }
 
-    public void setAttribute(String attributeKey, Object attributeValue) {
+    public void setAttribute(BattleAttribute attributeKey, Object attributeValue) {
         this.attributeMap.put(attributeKey, attributeValue);
     }
 
-    public Object getAttribute(String attributeKey) {
+    public Object getAttribute(BattleAttribute attributeKey) {
         if (!this.attributeMap.containsKey(attributeKey)) {
             return null;
         }
@@ -22,7 +22,7 @@ public abstract class BattleAttributable {
         return this.attributeMap.get(attributeKey);
     }
 
-    public <T> T resolve(String attributeKey, Class<T> type) {
+    public <T> T resolve(BattleAttribute attributeKey, Class<T> type) {
         if (!this.attributeMap.containsKey(attributeKey)) {
             return null;
         }
@@ -31,11 +31,11 @@ public abstract class BattleAttributable {
         return type.cast(member);
     }
 
-    public boolean hasAttribute(String attributeKey) {
+    public boolean hasAttribute(BattleAttribute attributeKey) {
         return this.attributeMap.containsKey(attributeKey);
     }
 
-    public void removeAttribute(String attributeKey) {
+    public void removeAttribute(BattleAttribute attributeKey) {
         this.attributeMap.remove(attributeKey);
     }
 }
