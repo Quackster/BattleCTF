@@ -39,13 +39,13 @@ public class BlockListener implements Listener {
         if (ArenaManager.getInstance().hasArena(event.getBlock().getLocation())) {
             Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
 
-            if (!arena.hasFlag(ArenaFlags.ALLOW_BLOCK_BREAKING)) {
-                event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotBuildArenaSelection());
-                event.setCancelled(true);
-                return;
-            }
-
             if (!isBuildMode) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_BLOCK_BREAKING)) {
+                    event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotBreakBlocksInArena());
+                    event.setCancelled(true);
+                    return;
+                }
+
                 event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotBreakBlocksInArena());
                 event.setCancelled(true);
                 return;
@@ -74,13 +74,13 @@ public class BlockListener implements Listener {
         if (ArenaManager.getInstance().hasArena(event.getBlockPlaced().getLocation())) {
             Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlockPlaced().getLocation());
 
-            if (!arena.hasFlag(ArenaFlags.ALLOW_BLOCK_PLACING)) {
-                event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotPlaceBlocksInArena());
-                event.setCancelled(true);
-                return;
-            }
-
             if (!isBuildMode) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_BLOCK_PLACING)) {
+                    event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotPlaceBlocksInArena());
+                    event.setCancelled(true);
+                    return;
+                }
+
                 event.getPlayer().sendMessage(LocaleUtil.getInstance().getCannotPlaceBlocksInArena());
                 event.setCancelled(true);
                 return;

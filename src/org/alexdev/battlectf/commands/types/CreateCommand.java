@@ -41,7 +41,7 @@ public class CreateCommand {
         if (SchematicManager.save(player, name, first, second)) {
             try {
                 ArenaManager.getInstance().createArena(player, name, first, second);
-                player.sendMessage(LocaleUtil.getInstance().getArenaSaved(name));
+                player.sendMessage(LocaleUtil.getInstance().getArenaCreated(name));
             } catch (IOException e) {
                 player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
             }
