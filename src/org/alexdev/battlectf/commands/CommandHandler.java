@@ -1,5 +1,10 @@
 package org.alexdev.battlectf.commands;
 
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import org.alexdev.battlectf.managers.arena.Arena;
+import org.alexdev.battlectf.managers.arena.ArenaManager;
+import org.alexdev.battlectf.managers.arena.SchematicManager;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.alexdev.battlectf.util.BattleAttribute;
@@ -9,6 +14,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.io.IOException;
 
 public class CommandHandler implements CommandExecutor {
     @Override
@@ -27,7 +34,8 @@ public class CommandHandler implements CommandExecutor {
 
 
         if (args[0].equalsIgnoreCase("select") ||
-            args[0].equalsIgnoreCase("create")) {
+            args[0].equalsIgnoreCase("create") ||
+            args[0].equalsIgnoreCase("save")) {
 
             if (!player.isOp()) {
                 player.sendMessage(ChatColor.RED + "You do not have permission to perform this action");
@@ -69,7 +77,65 @@ public class CommandHandler implements CommandExecutor {
                 return true;
             }
 
-            player.sendMessage(ChatColor.YELLOW + "Arena '" + name + "' has been created");
+            if (SchematicManager.save(player, name, first, second)) {
+                //SchematicManager.paste(player, SchematicManager.load(player, name), region.getMaximumPoint().getBlockX(), region.getMaximumPoint().getBlockY(), region.getMaximumPoint().getBlockZ());
+                try {
+                    ArenaManager.getInstance().createArena(player, name, first, second);
+                    player.sendMessage(ChatColor.YELLOW + "Arena '" + name + "' has been created");
+                } catch (IOException e) {
+                    player.sendMessage(ChatColor.RED + "Error occurred");
+                }
+            }
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("reset")) {
+            if (args.length == 1) {
+                player.sendMessage(ChatColor.RED + "/ctf reset [name]");
+                return true;
+            }
+
+            String name = args[1];
+
+            if (name.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "There was no name provided for the arena");
+                return true;
+            }
+
+            Clipboard clipboard = SchematicManager.load(player, name);
+            SchematicManager.paste(player, clipboard);
+
+            player.sendMessage(ChatColor.YELLOW + "Arena '" + name + "' has been reset");
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("save")) {
+            if (args.length == 1) {
+                player.sendMessage(ChatColor.RED + "/ctf reset [name]");
+                return true;
+            }
+
+            String name = args[1];
+
+            if (name.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "There was no name provided for the arena");
+                return true;
+            }
+
+            Arena arena = ArenaManager.getInstance().getArena(name);
+
+            Location first = arena.getFirstPoint();
+            Location second = arena.getSecondPoint();
+
+            if (SchematicManager.save(player, name, first, second)) {
+                try {
+                    ArenaManager.getInstance().createArena(player, name, first, second);
+                    player.sendMessage(ChatColor.GREEN + "Arena '" + name + "' has been saved");
+                } catch (IOException e) {
+                    player.sendMessage(ChatColor.RED + "Error occurred");
+                }
+            }
+
             return true;
         }
 

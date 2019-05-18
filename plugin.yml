@@ -1,5 +1,6 @@
 name: BattleCTF
 authors: [AlexTheAussie]
+depend: [WorldEdit]
 version: 0.1
 main: org.alexdev.battlectf.BattleCTF
 
