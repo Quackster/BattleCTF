@@ -1,10 +1,13 @@
 package org.alexdev.battlectf.commands;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.regions.CuboidRegion;
+import org.alexdev.battlectf.commands.types.CreateCommand;
+import org.alexdev.battlectf.commands.types.ResetCommand;
+import org.alexdev.battlectf.commands.types.SaveCommand;
+import org.alexdev.battlectf.commands.types.SelectCommand;
 import org.alexdev.battlectf.managers.arena.Arena;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
-import org.alexdev.battlectf.managers.arena.SchematicManager;
+import org.alexdev.battlectf.managers.schematic.SchematicManager;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.alexdev.battlectf.util.BattleAttribute;
@@ -44,99 +47,19 @@ public class CommandHandler implements CommandExecutor {
         }
 
         if (args[0].equalsIgnoreCase("select")) {
-            boolean isBuilder = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA, false);
-            battlePlayer.set(BattleAttribute.SELECT_ARENA, !isBuilder);
-
-            player.sendMessage(ChatColor.GREEN + "Selecting arena is set to " + (!isBuilder ? "true" : "false"));
-            return true;
+            return SelectCommand.onCommand(battlePlayer, player, args);
         }
 
         if (args[0].equalsIgnoreCase("create")) {
-            if (args.length == 1) {
-                player.sendMessage(ChatColor.RED + "/ctf create [name]");
-                return true;
-            }
-
-            String name = args[1];
-
-            if (name.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "There was no name provided for the arena");
-                return true;
-            }
-
-            Location first = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA_FIRST, null);
-            Location second = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA_SECOND, null);
-
-            if (first == null) {
-                player.sendMessage(ChatColor.RED + "You did not select the first position for the arena");
-                return true;
-            }
-
-            if (second == null) {
-                player.sendMessage(ChatColor.RED + "You did not select the second position for the arena");
-                return true;
-            }
-
-            if (SchematicManager.save(player, name, first, second)) {
-                //SchematicManager.paste(player, SchematicManager.load(player, name), region.getMaximumPoint().getBlockX(), region.getMaximumPoint().getBlockY(), region.getMaximumPoint().getBlockZ());
-                try {
-                    ArenaManager.getInstance().createArena(player, name, first, second);
-                    player.sendMessage(ChatColor.YELLOW + "Arena '" + name + "' has been created");
-                } catch (IOException e) {
-                    player.sendMessage(ChatColor.RED + "Error occurred");
-                }
-            }
-            return true;
+            return CreateCommand.onCommand(battlePlayer, player, args);
         }
 
         if (args[0].equalsIgnoreCase("reset")) {
-            if (args.length == 1) {
-                player.sendMessage(ChatColor.RED + "/ctf reset [name]");
-                return true;
-            }
-
-            String name = args[1];
-
-            if (name.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "There was no name provided for the arena");
-                return true;
-            }
-
-            Clipboard clipboard = SchematicManager.load(player, name);
-            SchematicManager.paste(player, clipboard);
-
-            player.sendMessage(ChatColor.YELLOW + "Arena '" + name + "' has been reset");
-            return true;
+            return ResetCommand.onCommand(battlePlayer, player, args);
         }
 
         if (args[0].equalsIgnoreCase("save")) {
-            if (args.length == 1) {
-                player.sendMessage(ChatColor.RED + "/ctf reset [name]");
-                return true;
-            }
-
-            String name = args[1];
-
-            if (name.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "There was no name provided for the arena");
-                return true;
-            }
-
-            Arena arena = ArenaManager.getInstance().getArena(name);
-
-            Location first = arena.getFirstPoint();
-            Location second = arena.getSecondPoint();
-
-            if (SchematicManager.save(player, name, first, second)) {
-                try {
-                    ArenaManager.getInstance().createArena(player, name, first, second);
-                    player.sendMessage(ChatColor.GREEN + "Arena '" + name + "' has been saved");
-                } catch (IOException e) {
-                    player.sendMessage(ChatColor.RED + "Error occurred");
-                }
-            }
-
-            return true;
+            return SaveCommand.onCommand(battlePlayer, player, args);
         }
 
         return false;

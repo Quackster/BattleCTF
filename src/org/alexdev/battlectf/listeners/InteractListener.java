@@ -28,7 +28,7 @@ public class InteractListener  implements Listener {
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            boolean isArenaSelect = battlePlayer.get(BattleAttribute.SELECT_ARENA);
+            boolean isArenaSelect = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA, false);
 
             if (isArenaSelect) {
                 event.getPlayer().sendMessage(ChatColor.AQUA + "Second position for arena selection at " + Util.describeLocation(event.getClickedBlock().getLocation()));

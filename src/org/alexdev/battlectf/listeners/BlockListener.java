@@ -19,7 +19,7 @@ public class BlockListener implements Listener {
             return;
         }
 
-        boolean isArenaSelect = battlePlayer.get(BattleAttribute.SELECT_ARENA);
+        boolean isArenaSelect = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA, false);
 
         if (isArenaSelect) {
             event.getPlayer().sendMessage(ChatColor.AQUA + "First position for arena selection at " + Util.describeLocation(event.getBlock().getLocation()));
@@ -38,7 +38,7 @@ public class BlockListener implements Listener {
             return;
         }
 
-        boolean isArenaSelect = battlePlayer.get(BattleAttribute.SELECT_ARENA);
+        boolean isArenaSelect = battlePlayer.getOrDefault(BattleAttribute.SELECT_ARENA, false);
 
         if (isArenaSelect) {
             event.getPlayer().sendMessage(ChatColor.RED + "Can't build while arena coordinate selection is on");

@@ -1,4 +1,4 @@
-package org.alexdev.battlectf.managers.arena;
+package org.alexdev.battlectf.managers.schematic;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -43,19 +43,21 @@ public class SchematicManager {
         }
 
         CuboidRegion region = new CuboidRegion(new BukkitWorld(player.getWorld()),
-                BlockVector3.at(min.getBlockX(), min.getBlockY(), min.getBlockZ()),
-                BlockVector3.at(max.getBlockX(), max.getBlockY(), max.getBlockZ())
+            BlockVector3.at(min.getBlockX(), min.getBlockY(), min.getBlockZ()),
+            BlockVector3.at(max.getBlockX(), max.getBlockY(), max.getBlockZ())
         );
 
         BlockArrayClipboard clipboard = new BlockArrayClipboard(region);
         EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(region.getWorld(), -1);
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, clipboard, region.getMinimumPoint());
         forwardExtentCopy.setCopyingEntities(true);
+        forwardExtentCopy.setRemovingEntities(false);
 
         try {
             Operations.complete(forwardExtentCopy);
         } catch (WorldEditException e) {
             e.printStackTrace();
+            return false;
         }
 
         try (ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getWriter(new FileOutputStream(schematicFile))) {
