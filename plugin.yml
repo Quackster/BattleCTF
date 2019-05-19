@@ -3,6 +3,7 @@ authors: [AlexTheAussie]
 depend: [WorldEdit]
 version: 0.1
 main: org.alexdev.battlectf.BattleCTF
+api-version: 1.13
 
 commands:
   battlectf:

@@ -38,6 +38,8 @@ public class Arena {
             put(ArenaFlags.ALLOW_WATER_FLOW, true);
             put(ArenaFlags.ALLOW_LEAF_DECAY, true);
             put(ArenaFlags.ALLOW_FIRE_SPREAD, true);
+            put(ArenaFlags.ALLOW_FIRE_IGNITE, true);
+            put(ArenaFlags.ALLOW_FIRE_BURN, true);
             put(ArenaFlags.ALLOW_GRASS_SPREAD, true);
             put(ArenaFlags.ALLOW_MUSHROOM_SPREAD, false);
             put(ArenaFlags.ALLOW_VINE_SPREAD, false);

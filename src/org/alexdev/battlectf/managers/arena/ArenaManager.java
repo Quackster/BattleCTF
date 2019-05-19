@@ -77,8 +77,6 @@ public class ArenaManager {
             Location secondLocation = new Location(world, maxX, maxY, maxZ);
 
             Arena arena = new Arena(name, firstLocation.getWorld().getName(), firstLocation, secondLocation);
-            arena.getFlags().clear();
-
             List<String> flags = (List<String>) arenaConfig.getList("Flags");
 
             for (String flag : flags) {

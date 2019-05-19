@@ -173,9 +173,22 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onBlockSpread(BlockSpreadEvent event) {
         Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
+        Arena source = ArenaManager.getInstance().getArenaByLocation(event.getSource().getLocation());
+
+        if (arena != source) {
+            event.setCancelled(true);
+            return;
+        }
 
         if (arena != null) {
             if (event.getSource().getType() == Material.FIRE) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_FIRE_SPREAD)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
+            if (event.getSource().getType() == Material.GRASS_BLOCK) {
                 if (!arena.hasFlag(ArenaFlags.ALLOW_GRASS_SPREAD)) {
                     event.setCancelled(true);
                     return;
@@ -194,6 +207,30 @@ public class BlockListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockIgnite(BlockIgniteEvent event) {
+        Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getIgnitingBlock().getLocation());
+
+        if (arena != null) {
+            if (!arena.hasFlag(ArenaFlags.ALLOW_FIRE_IGNITE)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBurn(BlockBurnEvent event) {
+        Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getIgnitingBlock().getLocation());
+
+        if (arena != null) {
+            if (!arena.hasFlag(ArenaFlags.ALLOW_FIRE_BURN)) {
+                event.setCancelled(true);
+                return;
             }
         }
     }
