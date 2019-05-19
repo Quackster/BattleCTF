@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 public class ArenaManager {
     private static ArenaManager instance;
@@ -76,12 +77,12 @@ public class ArenaManager {
             Location secondLocation = new Location(world, maxX, maxY, maxZ);
 
             Arena arena = new Arena(name, firstLocation.getWorld().getName(), firstLocation, secondLocation);
+            arena.getFlags().clear();
 
-            List<String> flags = new ArrayList<>();
-            arenaConfig.getList("Flags", flags);
+            List<String> flags = (List<String>) arenaConfig.getList("Flags");
 
             for (String flag : flags) {
-                String[] detail = flag.split(":");
+                String[] detail = flag.split(Pattern.quote(":"));
                 arena.getFlags().put(ArenaFlags.valueOf(detail[0]), detail[1].equalsIgnoreCase("true"));
             }
 

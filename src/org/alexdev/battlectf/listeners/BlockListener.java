@@ -1,5 +1,6 @@
 package org.alexdev.battlectf.listeners;
 
+import org.alexdev.battlectf.BattleCTF;
 import org.alexdev.battlectf.managers.arena.Arena;
 import org.alexdev.battlectf.managers.arena.ArenaFlags;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
@@ -9,14 +10,12 @@ import org.alexdev.battlectf.util.LocaleUtil;
 import org.alexdev.battlectf.util.attributes.BattleAttribute;
 import org.alexdev.battlectf.util.Util;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.util.Iterator;
@@ -132,15 +131,70 @@ public class BlockListener implements Listener {
                 }
             }
         }
+
+        for (Iterator<Block> it = event.blockList().iterator(); it.hasNext();) {
+            Block block = it.next();
+
+            Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
+
+            if (arena != null && !arena.hasFlag(ArenaFlags.ALLOW_EXPLOSIONS)) {
+                it.remove();
+            }
+        }
     }
 
     @EventHandler
     public void onBlockFromTo(BlockFromToEvent event){
-        Arena source = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
+        Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
         Arena destination = ArenaManager.getInstance().getArenaByLocation(event.getToBlock().getLocation());
 
-        if (source != destination) {
+        if (arena != destination) {
             event.setCancelled(true);
+            return;
+        }
+
+        if (arena != null) {
+            if (event.getBlock().getType() == Material.LAVA) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_LAVA_FLOW)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
+            if (event.getBlock().getType() == Material.WATER) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_WATER_FLOW)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockSpread(BlockSpreadEvent event) {
+        Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlock().getLocation());
+
+        if (arena != null) {
+            if (event.getSource().getType() == Material.FIRE) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_GRASS_SPREAD)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
+            if (event.getSource().getType() == Material.VINE) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_VINE_SPREAD)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
+            if (event.getSource().getType() == Material.BROWN_MUSHROOM || event.getSource().getType() == Material.RED_MUSHROOM) {
+                if (!arena.hasFlag(ArenaFlags.ALLOW_MUSHROOM_SPREAD)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
         }
     }
 }

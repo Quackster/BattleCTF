@@ -35,7 +35,13 @@ public class Arena {
             put(ArenaFlags.ALLOW_MOB_SPAWNING, false);
             put(ArenaFlags.ALLOW_EXPLOSIONS, true);
             put(ArenaFlags.ALLOW_LAVA_FLOW, true);
-            put(ArenaFlags.ALLOW_WATER_FLOW, false);
+            put(ArenaFlags.ALLOW_WATER_FLOW, true);
+            put(ArenaFlags.ALLOW_LEAF_DECAY, true);
+            put(ArenaFlags.ALLOW_FIRE_SPREAD, true);
+            put(ArenaFlags.ALLOW_GRASS_SPREAD, true);
+            put(ArenaFlags.ALLOW_MUSHROOM_SPREAD, false);
+            put(ArenaFlags.ALLOW_VINE_SPREAD, false);
+
         }};
     }
 

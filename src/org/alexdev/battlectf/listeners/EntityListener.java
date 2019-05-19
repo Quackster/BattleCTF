@@ -65,5 +65,15 @@ public class EntityListener implements Listener {
                 }
             }
         }
+
+        for (Iterator<Block> it = event.blockList().iterator(); it.hasNext();) {
+            Block block = it.next();
+
+            Arena arena = ArenaManager.getInstance().getArenaByLocation(block.getLocation());
+
+            if (arena != null && !arena.hasFlag(ArenaFlags.ALLOW_EXPLOSIONS)) {
+                it.remove();
+            }
+        }
     }
 }
