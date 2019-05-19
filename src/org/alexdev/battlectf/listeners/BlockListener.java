@@ -213,6 +213,10 @@ public class BlockListener implements Listener {
 
     @EventHandler
     public void onBlockIgnite(BlockIgniteEvent event) {
+        if (event.getIgnitingBlock() == null) {
+            return;
+        }
+
         Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getIgnitingBlock().getLocation());
 
         if (arena != null) {
@@ -225,6 +229,10 @@ public class BlockListener implements Listener {
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
+        if (event.getIgnitingBlock() == null) {
+            return;
+        }
+
         Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getIgnitingBlock().getLocation());
 
         if (arena != null) {

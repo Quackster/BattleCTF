@@ -1,5 +1,8 @@
 package org.alexdev.battlectf.listeners;
 
+import org.alexdev.battlectf.managers.arena.Arena;
+import org.alexdev.battlectf.managers.arena.ArenaFlags;
+import org.alexdev.battlectf.managers.arena.ArenaManager;
 import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +27,15 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+        Arena arena = ArenaManager.getInstance().getArenaByLocation(event.getBlockClicked().getLocation());
+
+        if (arena != null) {
+            event.setCancelled(true);
+            return;
+        }
+    }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent e) {
@@ -38,7 +50,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onHungerChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+            Player player = (Player) event.getEntity();:P
         }
     }
 
