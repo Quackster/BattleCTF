@@ -50,7 +50,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onHungerChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();:P
+            Player player = (Player) event.getEntity();
         }
     }
 
