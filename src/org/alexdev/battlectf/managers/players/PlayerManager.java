@@ -14,11 +14,20 @@ public class PlayerManager {
         this.playerMap = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Adds the player to the map
+     *
+     * @param player the player
+     */
     public void addPlayer(Player player) {
-        System.out.println("Add: " + player.getUniqueId().toString());
         this.playerMap.put(player.getUniqueId().toString(), new BattlePlayer(player));
     }
 
+    /**
+     * Get the battle player instance by player instance
+     * @param player the player
+     * @return the instance, if successful
+     */
     public BattlePlayer getPlayer(Player player) {
         if (!this.playerMap.containsKey(player.getUniqueId().toString())) {
             return null;
@@ -27,11 +36,20 @@ public class PlayerManager {
         return this.playerMap.get(player.getUniqueId().toString());
     }
 
-
+    /**
+     * Check if the server contains the player
+     * @param player the player
+     * @return true, if successful
+     */
     public boolean hasPlayer(Player player) {
         return this.playerMap.containsKey(player.getUniqueId().toString());
     }
 
+    /**
+     * Remove the player from the map
+     *
+     * @param player the player
+     */
     public void removePlayer(Player player) {
         this.playerMap.remove(player.getUniqueId().toString());
     }
