@@ -1,6 +1,8 @@
 package org.alexdev.battlectf.commands.types;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import org.alexdev.battlectf.managers.arena.Arena;
+import org.alexdev.battlectf.managers.arena.ArenaManager;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.schematic.SchematicManager;
 import org.alexdev.battlectf.util.LocaleUtil;
@@ -21,10 +23,15 @@ public class ResetCommand {
             return true;
         }
 
-        Clipboard clipboard = SchematicManager.load(player, name);
-        SchematicManager.paste(player, clipboard);
+        Arena arena = ArenaManager.getInstance().getArena(name);
 
-        player.sendMessage(LocaleUtil.getInstance().getArenaReset(name));
+        if (arena != null) {
+            arena.reset();
+            player.sendMessage(LocaleUtil.getInstance().getArenaReset(name));
+        } else {
+            player.sendMessage(LocaleUtil.getInstance().getArenaNotFound(name));
+        }
+
         return true;
 
     }

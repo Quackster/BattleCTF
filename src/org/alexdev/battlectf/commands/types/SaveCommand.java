@@ -27,18 +27,10 @@ public class SaveCommand {
 
         Arena arena = ArenaManager.getInstance().getArena(name);
 
-        Location first = arena.getFirstPoint();
-        Location second = arena.getSecondPoint();
-
-        if (SchematicManager.save(player, name, first, second)) {
-            try {
-                ArenaManager.getInstance().createArena(player, name, first, second);
-                player.sendMessage(LocaleUtil.getInstance().getArenaSaved(name));
-            } catch (IOException e) {
-                player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
-            }
+        if (arena != null) {
+            arena.save(player);
         } else {
-            player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
+            player.sendMessage(LocaleUtil.getInstance().getArenaNotFound(name));
         }
 
         return true;

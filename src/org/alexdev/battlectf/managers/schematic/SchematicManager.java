@@ -16,6 +16,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import org.alexdev.battlectf.BattleCTF;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.io.*;
@@ -24,7 +25,7 @@ import java.nio.file.Paths;
 public class SchematicManager {
     private static String SCHEMATIC_FOLDER = "schematics";
 
-    public static boolean save(Player player, String arenaName, Location min, Location max) {
+    public static boolean save(Player player, World world, String arenaName, Location min, Location max) {
         File schematicFile = getSchematicFile(arenaName);
         checkArenaFolder();
 
@@ -70,7 +71,7 @@ public class SchematicManager {
         return true;
     }
 
-    public static Clipboard load(Player player, String arenaName) {
+    public static Clipboard load(String arenaName) {
         File schematicFile = getSchematicFile(arenaName);
         checkArenaFolder();
 
@@ -90,8 +91,8 @@ public class SchematicManager {
         return clipboard;
     }
 
-    public static void paste(Player player, Clipboard clipboard) {
-        try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(player.getWorld()), -1)) {
+    public static void paste(World world, Clipboard clipboard) {
+        try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(world), -1)) {
             Operation operation = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
                     .to(clipboard.getOrigin())

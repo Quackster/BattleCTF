@@ -1,16 +1,22 @@
 package org.alexdev.battlectf.managers.arena;
 
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionIntersection;
+import com.sun.org.apache.regexp.internal.RE;
+import org.alexdev.battlectf.managers.schematic.SchematicManager;
 import org.alexdev.battlectf.util.LocaleUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.*;
+import org.bukkit.util.BoundingBox;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,6 +51,48 @@ public class Arena {
             put(ArenaFlags.ALLOW_VINE_SPREAD, false);
 
         }};
+    }
+
+    /**
+     * Resets the arena blocks.
+     */
+    public void reset() {
+        World world = Bukkit.getWorld(this.world);
+
+        if (world == null) {
+            return;
+        }
+
+        for (Entity entity : world.getNearbyEntities(this.getBoundingBox())) {
+            if (entity instanceof Animals && entity instanceof Monster && entity.getType() == EntityType.DROPPED_ITEM) {
+                continue;
+            }
+
+            entity.remove();
+        }
+
+        Clipboard clipboard = SchematicManager.load(this.name);
+        SchematicManager.paste(world, clipboard);
+    }
+
+    public void save(Player player) {
+        World world = Bukkit.getWorld(this.world);
+
+        if (world == null) {
+            player.sendMessage(LocaleUtil.getInstance().getWorldNotFound(this.world));
+            return;
+        }
+
+        if (!SchematicManager.save(player, world, this.name, this.getFirstPoint(), this.getSecondPoint())) {
+            return;
+        }
+
+        try {
+            ArenaManager.getInstance().createArena(player, name, this.getFirstPoint(), this.getSecondPoint());
+            player.sendMessage(LocaleUtil.getInstance().getArenaSaved(name));
+        } catch (IOException e) {
+            player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
+        }
     }
 
     /**
@@ -88,12 +136,23 @@ public class Arena {
      * @return the cuboid region
      */
     public CuboidRegion getCuboidRegion() {
-        CuboidRegion region = new CuboidRegion(new BukkitWorld(this.getWorld()),
+        return new CuboidRegion(new BukkitWorld(this.getWorld()),
                 BlockVector3.at(this.firstPoint.getBlockX(), this.firstPoint.getBlockY(), this.firstPoint.getBlockZ()),
                 BlockVector3.at(this.secondPoint.getBlockX(), this.secondPoint.getBlockY(), this.secondPoint.getBlockZ())
         );
+    }
 
-        return region;
+    /**
+     * Get the bounding box for this arena.
+     *
+     * @return the bounding box
+     */
+    private BoundingBox getBoundingBox() {
+        CuboidRegion region = this.getCuboidRegion();
+
+        return new BoundingBox(
+                region.getMaximumPoint().getX(), region.getMaximumPoint().getY(), region.getMaximumPoint().getZ(),
+                region.getMinimumPoint().getX(), region.getMinimumPoint().getY(), region.getMinimumPoint().getZ());
     }
 
     /**
@@ -140,4 +199,5 @@ public class Arena {
     public Map<ArenaFlags, Boolean> getFlags() {
         return flagsMap;
     }
+
 }

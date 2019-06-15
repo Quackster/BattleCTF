@@ -63,6 +63,14 @@ public class LocaleUtil {
         return ChatColor.GREEN + "Arena '" + name + "' has been saved";
     }
 
+    public String getArenaNotFound(String name) {
+        return ChatColor.RED + "The arena '" + name + "' does not exist";
+    }
+
+    public String getWorldNotFound(String name) {
+        return ChatColor.RED + "The world '" + name + "' for this arena does not exist";
+    }
+
     /**
      * Get configuration singleton.
      *
