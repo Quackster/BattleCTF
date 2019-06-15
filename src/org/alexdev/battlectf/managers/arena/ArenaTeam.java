@@ -34,7 +34,7 @@ public class ArenaTeam {
                     Float.valueOf(String.valueOf(spawnValues[3])),
                     Float.valueOf(String.valueOf(spawnValues[4])));
         } catch (Exception ex) {
-            BattleCTF.getInstance().getLogger().warning("The team " + this.name + " has no spawn point!");
+            BattleCTF.getInstance().getLogger().warning("The team " + this.name + " for the arena " + arena.getName() + " has no spawn point!");
         }
     }
 

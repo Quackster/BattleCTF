@@ -80,6 +80,10 @@ public class LocaleUtil {
         return ChatColor.RED + "The team " + team + " was not found";
     }
 
+    public String getTeamSaved(String teamName) {
+        return ChatColor.GREEN + "The team '" + teamName + "' has been saved";
+    }
+
     /**
      * Get configuration singleton.
      *
@@ -91,9 +95,5 @@ public class LocaleUtil {
         }
 
         return instance;
-    }
-
-    public String getTeamSaved(String teamName) {
-        return ChatColor.GREEN + "The team '" + teamName + "' has been saved";
     }
 }
