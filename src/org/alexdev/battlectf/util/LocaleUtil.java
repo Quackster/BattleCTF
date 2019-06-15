@@ -84,6 +84,14 @@ public class LocaleUtil {
         return ChatColor.GREEN + "The team '" + teamName + "' has been saved";
     }
 
+    public String getNoGamesToJoin() {
+        return ChatColor.RED + "There are no games to join at the moment";
+    }
+
+    public String getAlreadyPlaying() {
+        return ChatColor.RED + "You are already playing";
+    }
+
     /**
      * Get configuration singleton.
      *
@@ -95,5 +103,9 @@ public class LocaleUtil {
         }
 
         return instance;
+    }
+
+    public String getNotPlaying() {
+        return ChatColor.RED + "You are not playing a game";
     }
 }

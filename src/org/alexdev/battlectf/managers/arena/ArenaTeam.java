@@ -1,14 +1,20 @@
 package org.alexdev.battlectf.managers.arena;
 
 import org.alexdev.battlectf.BattleCTF;
+import org.alexdev.battlectf.managers.players.BattlePlayer;
+import org.alexdev.battlectf.managers.players.PlayerManager;
+import org.alexdev.battlectf.util.InventoryBase64;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArenaTeam {
@@ -17,12 +23,14 @@ public class ArenaTeam {
     private String name;
     private ChatColor chatColor;
     private Location spawn;
+    private List<BattlePlayer> teamPlayers;
 
     public ArenaTeam(Arena arena, int position, String name, String colour, String spawnCoordinates) {
         this.position = position;
         this.arena = arena;
         this.name = name;
         this.chatColor = ChatColor.valueOf(colour);
+        this.teamPlayers = new ArrayList<>();
 
         String[] spawnValues = spawnCoordinates.split(",");
 
@@ -36,6 +44,57 @@ public class ArenaTeam {
         } catch (Exception ex) {
             BattleCTF.getInstance().getLogger().warning("The team " + this.name + " for the arena " + arena.getName() + " has no spawn point!");
         }
+
+        this.resetTeam();
+    }
+
+    /**
+     * Method for resetting team
+     */
+    private void resetTeam() {
+        this.teamPlayers.clear();
+
+
+    }
+
+    /**
+     * Handler for joining game.
+     *
+     * @param player the player
+     */
+    public void join(Player player) {
+        BattlePlayer battlePlayer = PlayerManager.getInstance().getPlayer(player);
+
+        if (battlePlayer == null) {
+            return;
+        }
+
+        battlePlayer.setTeam(this);
+        battlePlayer.setSurvivalLocation(player.getLocation().clone());
+        battlePlayer.setSurvivalInventory(InventoryBase64.toBase64(player.getInventory()));
+
+        this.arena.refreshInventory(player);
+        player.teleport(this.spawn);
+    }
+
+    /**
+     * Leave team handler
+     * @param player the player to leave
+     */
+    public void leaveTeam(Player player) throws IOException {
+        BattlePlayer battlePlayer = PlayerManager.getInstance().getPlayer(player);
+
+        if (battlePlayer == null) {
+            return;
+        }
+
+        player.getInventory().clear();
+        player.teleport(battlePlayer.getSurvivalLocation());
+
+        Inventory inventory = InventoryBase64.fromBase64(battlePlayer.getSurvivalInventory());
+        player.getInventory().setContents(inventory.getContents());
+
+        battlePlayer.setTeam(null);
     }
 
     /**
@@ -113,4 +172,14 @@ public class ArenaTeam {
     public void setSpawn(Location spawn) {
         this.spawn = spawn;
     }
+
+    /**
+     * Get the team players.
+     *
+     * @return the team players
+     */
+    public List<BattlePlayer> getTeamPlayers() {
+        return teamPlayers;
+    }
+
 }

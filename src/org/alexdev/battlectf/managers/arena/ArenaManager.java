@@ -82,7 +82,7 @@ public class ArenaManager {
                 arena.getFlags().put(ArenaFlags.valueOf(detail[0]), detail[1].equalsIgnoreCase("true"));
             }
 
-            arena.refreshTeams(conf);
+            arena.refreshTeams();
             this.arenaMap.put(name, arena);
         }
     }
@@ -140,10 +140,9 @@ public class ArenaManager {
         secondConfig.set("Spawn", "null");
 
         conf.save(arenaConfig);
-        arena.refreshTeams(conf);
+        arena.refreshTeams();
 
         this.arenaMap.put(name, arena);
-
         return arena;
     }
 

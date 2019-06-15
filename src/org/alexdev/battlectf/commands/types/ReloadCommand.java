@@ -29,7 +29,7 @@ public class ReloadCommand {
         if (arena != null) {
             FileConfiguration conf = YamlConfiguration.loadConfiguration(arena.getConfigFile());
 
-            arena.refreshTeams(conf);
+            arena.refreshTeams();
             arena.reset();
 
             player.sendMessage(LocaleUtil.getInstance().getArenaReloaded(name));

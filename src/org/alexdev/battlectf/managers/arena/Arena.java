@@ -5,22 +5,27 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import org.alexdev.battlectf.BattleCTF;
+import org.alexdev.battlectf.managers.players.BattlePlayer;
+import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.alexdev.battlectf.managers.schematic.SchematicManager;
+import org.alexdev.battlectf.managers.team.TeamColour;
 import org.alexdev.battlectf.util.LocaleUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.BoundingBox;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Arena {
@@ -59,11 +64,78 @@ public class Arena {
     }
 
     /**
-     * Refresh the arena teams.
+     * Join team handler.
      *
-     * @param conf the configuration instance
+     * @param player the player
+     * @param teamName the team name
      */
-    public void refreshTeams(FileConfiguration conf) {
+    public void joinTeam(Player player, String teamName) {
+        ArenaTeam team = null;
+
+        if (teamName != null) {
+            team = this.getTeamByName(teamName);
+
+        } else {
+            // Find team with lowest team members to add to
+            List<ArenaTeam> sortedTeamList = new ArrayList<>(this.teamList);
+            sortedTeamList.sort(Comparator.comparingInt(t -> t.getTeamPlayers().size()));
+
+            if (sortedTeamList.size() > 0) {
+                team = sortedTeamList.get(0);
+            }
+        }
+
+        if (team != null) {
+            team.join(player);
+        } else {
+            System.out.println("Could not join team?");
+        }
+    }
+
+    /**
+     * Reapply the spawn items on the player.
+     *
+     * @param player the player to refresh the inventory for
+     */
+    public void refreshInventory(Player player) {
+        BattlePlayer battlePlayer = PlayerManager.getInstance().getPlayer(player);
+
+        if (battlePlayer == null) {
+            return;
+        }
+
+        player.getInventory().clear();
+
+        ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
+        LeatherArmorMeta lam = (LeatherArmorMeta)lhelmet.getItemMeta();
+        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lhelmet.setItemMeta(lam);
+        player.getInventory().setHelmet(lhelmet);
+
+        lhelmet = new ItemStack(Material.LEATHER_BOOTS, 1);
+        lam = (LeatherArmorMeta)lhelmet.getItemMeta();
+        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lhelmet.setItemMeta(lam);
+        player.getInventory().setBoots(lhelmet);
+
+        lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+        lam = (LeatherArmorMeta)lhelmet.getItemMeta();
+        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lhelmet.setItemMeta(lam);
+        player.getInventory().setChestplate(lhelmet);
+
+        lhelmet = new ItemStack(Material.LEATHER_LEGGINGS, 1);
+        lam = (LeatherArmorMeta)lhelmet.getItemMeta();
+        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lhelmet.setItemMeta(lam);
+        player.getInventory().setLeggings(lhelmet);
+    }
+
+    /**
+     * Refresh the arena teams.
+     */
+    public void refreshTeams() {
+        FileConfiguration conf = YamlConfiguration.loadConfiguration(this.getConfigFile());
         this.teamList.clear();
 
         for (int i = 0; i < 16; i++) {
@@ -79,6 +151,8 @@ public class Arena {
                     configurationSection.getString("Colour"),
                     configurationSection.getString("Spawn")));
         }
+
+        this.shuffleTeams();
     }
 
     /**
@@ -95,11 +169,9 @@ public class Arena {
         SchematicManager.paste(world, clipboard);
 
         for (Entity entity : world.getNearbyEntities(this.getBoundingBox())) {
-            if (!(entity.getType() == EntityType.ITEM_FRAME && entity instanceof Animals && entity instanceof Monster && entity.getType() == EntityType.DROPPED_ITEM)) {
-                continue;
+            if (entity.getType() != EntityType.PLAYER) {
+                entity.remove();
             }
-
-            entity.remove();
         }
     }
 
@@ -121,6 +193,21 @@ public class Arena {
         } catch (IOException e) {
             player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
         }
+    }
+
+    /**
+     * Get all players who are playing in the arena.
+     *
+     * @return the players
+     */
+    public List<BattlePlayer> getAllPlayers() {
+        List<BattlePlayer> battlePlayers = new ArrayList<>();
+
+        for (ArenaTeam arenaTeam : this.teamList) {
+            battlePlayers.addAll(arenaTeam.getTeamPlayers());
+        }
+
+        return battlePlayers;
     }
 
     /**
@@ -258,5 +345,15 @@ public class Arena {
      */
     public List<ArenaTeam> getTeamList() {
         return teamList;
+    }
+
+    /**
+     * Shuffle teams.
+     */
+    public void shuffleTeams() {
+        List<ArenaTeam> tempTeams = new ArrayList<ArenaTeam>(this.teamList);
+        Collections.shuffle(tempTeams);
+        this.teamList = tempTeams;
+
     }
 }

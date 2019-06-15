@@ -66,6 +66,14 @@ public class CommandHandler implements CommandExecutor {
             return SetCommand.onCommand(battlePlayer, player, args);
         }
 
+        if (args[0].equalsIgnoreCase("join")) {
+            return JoinCommand.onCommand(battlePlayer, player, args);
+        }
+
+        if (args[0].equalsIgnoreCase("leave")) {
+            return LeaveCommand.onCommand(battlePlayer, player, args);
+        }
+
         return true;
     }
 
