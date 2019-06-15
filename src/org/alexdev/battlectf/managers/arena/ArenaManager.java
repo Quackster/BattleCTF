@@ -1,14 +1,14 @@
 package org.alexdev.battlectf.managers.arena;
 
 import org.alexdev.battlectf.BattleCTF;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,7 @@ public class ArenaManager {
     /**
      * Load arenas from /arenas/ folder
      */
+    @SuppressWarnings("deprecation")
     public void loadArenas() {
         this.arenaMap.clear();
 
@@ -82,7 +83,46 @@ public class ArenaManager {
                 arena.getFlags().put(ArenaFlags.valueOf(detail[0]), detail[1].equalsIgnoreCase("true"));
             }
 
+            List<ItemStack> items = new ArrayList<ItemStack>();
+
+            try {
+                for (String line : conf.getStringList("Items")) {
+                    System.out.println("ededede: " + line);
+
+                    String[] str = null;
+
+                    if (line.contains("|")) {
+                        str = line.split(Pattern.quote("|"))[0].split(",");
+
+                    } else {
+                        str = line.split(",");
+                    }
+
+                    ItemStack stack = new ItemStack(Material.valueOf(str[0]));
+                    stack.setAmount(Integer.parseInt(str[1]));
+
+                    line = line.replace(str[0] + "," + str[0] + "|", "");
+
+                    if (line.contains("|")) {
+                        for (String e : line.replace(line.split("\\|")[0] + "|", "").split("\\|")) {
+                            ItemMeta meta = stack.getItemMeta();
+
+                            int enchantmentLevel = Integer.parseInt(e.split(",")[1]);
+                            meta.addEnchant(Enchantment.getByName(e.split(",")[0]), enchantmentLevel, true);
+
+                            stack.setItemMeta(meta);
+                        }
+                    }
+
+                    items.add(stack);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
             arena.refreshTeams();
+            arena.setSpawnItems(items);
+
             this.arenaMap.put(name, arena);
         }
     }
@@ -138,6 +178,20 @@ public class ArenaManager {
         secondConfig.set("Name", "Blue");
         secondConfig.set("Colour", ChatColor.BLUE.name());
         secondConfig.set("Spawn", "null");
+
+        List<String> items = new ArrayList<>();
+        items.add("IRON_SWORD,1");
+        items.add("BOW,1|ARROW_INFINITE,1");
+        items.add("IRON_AXE,1");
+        items.add("IRON_PICKAXE,1");
+        items.add("OAK_LOG,64");
+        items.add("GLASS,64");
+        items.add("COOKED_BEEF,12");
+        items.add("GOLDEN_APPLE,3");
+        items.add("ARROW,1");
+        items.add("DIAMOND_BLOCK,4");
+        items.add("IRON_BLOCK,1");
+        conf.set("Items", items);
 
         conf.save(arenaConfig);
         arena.refreshTeams();

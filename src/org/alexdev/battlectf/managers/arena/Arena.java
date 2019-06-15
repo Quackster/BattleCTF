@@ -33,6 +33,7 @@ public class Arena {
 
     private Map<ArenaFlags, Boolean> flagsMap;
     private List<ArenaTeam> teamList;
+    private List<ItemStack> spawnItems;
 
     public Arena(String name, String world, Location firstPoint, Location secondPoint) {
         this.name = name;
@@ -133,6 +134,13 @@ public class Arena {
         lam.setColor(teamColour);
         lhelmet.setItemMeta(lam);
         player.getInventory().setLeggings(lhelmet);
+
+        for (ItemStack itemStack : this.spawnItems) {
+            System.out.println("test123");
+            player.getInventory().addItem(itemStack.clone());
+        }
+
+        player.updateInventory();
     }
 
     /**
@@ -354,5 +362,23 @@ public class Arena {
         Collections.shuffle(tempTeams);
         this.teamList = tempTeams;
 
+    }
+
+    /**
+     * Get the respawn items.
+     *
+     * @return the respawn items.
+     */
+    public List<ItemStack> getSpawnItems() {
+        return spawnItems;
+    }
+
+    /**
+     * Set the spawn items.
+     *
+     * @param spawnItems the spawn items
+     */
+    public void setSpawnItems(List<ItemStack> spawnItems) {
+        this.spawnItems = spawnItems;
     }
 }
