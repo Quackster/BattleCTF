@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +82,7 @@ public class ArenaManager {
                 arena.getFlags().put(ArenaFlags.valueOf(detail[0]), detail[1].equalsIgnoreCase("true"));
             }
 
+            arena.refreshTeams(conf);
             this.arenaMap.put(name, arena);
         }
     }
@@ -99,8 +98,7 @@ public class ArenaManager {
      */
     public Arena createArena(Player player, String name, Location firstPoint, Location secondPoint) throws IOException {
         Arena arena = new Arena(name, firstPoint.getWorld().getName(), firstPoint, secondPoint);
-
-        File arenaConfig = Paths.get(BattleCTF.getInstance().getDataFolder().getAbsolutePath(), "arenas", name + ".yml").toFile();
+        File arenaConfig = arena.getConfigFile();
 
         if (!arenaConfig.exists()) {
             arenaConfig.createNewFile();
@@ -134,14 +132,16 @@ public class ArenaManager {
         ConfigurationSection firstConfig = teamConfig.createSection("0");
         firstConfig.set("Name", "Red");
         firstConfig.set("Colour", ChatColor.RED.name());
-        firstConfig.set("Spawn", "[]");
+        firstConfig.set("Spawn", "null");
 
         ConfigurationSection secondConfig = teamConfig.createSection("1");
         secondConfig.set("Name", "Blue");
         secondConfig.set("Colour", ChatColor.BLUE.name());
-        secondConfig.set("Spawn", "[]");
+        secondConfig.set("Spawn", "null");
 
         conf.save(arenaConfig);
+        arena.refreshTeams(conf);
+
         this.arenaMap.put(name, arena);
 
         return arena;

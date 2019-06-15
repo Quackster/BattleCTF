@@ -1,5 +1,6 @@
 package org.alexdev.battlectf.util;
 
+import org.alexdev.battlectf.managers.arena.ArenaTeam;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -71,6 +72,14 @@ public class LocaleUtil {
         return ChatColor.RED + "The world '" + name + "' for this arena does not exist";
     }
 
+    public String getArenaReloaded(String name) {
+        return ChatColor.GREEN + "The arena " + name + " has been reloaded";
+    }
+
+    public String getTeamNotFound(String team) {
+        return ChatColor.RED + "The team " + team + " was not found";
+    }
+
     /**
      * Get configuration singleton.
      *
@@ -82,5 +91,9 @@ public class LocaleUtil {
         }
 
         return instance;
+    }
+
+    public String getTeamSaved(String teamName) {
+        return ChatColor.GREEN + "The team '" + teamName + "' has been saved";
     }
 }

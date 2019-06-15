@@ -4,20 +4,22 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.regions.RegionIntersection;
-import com.sun.org.apache.regexp.internal.RE;
+import org.alexdev.battlectf.BattleCTF;
 import org.alexdev.battlectf.managers.schematic.SchematicManager;
 import org.alexdev.battlectf.util.LocaleUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.util.BoundingBox;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +30,7 @@ public class Arena {
     private Location secondPoint;
 
     private Map<ArenaFlags, Boolean> flagsMap;
+    private List<ArenaTeam> teamList;
 
     public Arena(String name, String world, Location firstPoint, Location secondPoint) {
         this.name = name;
@@ -51,6 +54,31 @@ public class Arena {
             put(ArenaFlags.ALLOW_VINE_SPREAD, false);
 
         }};
+
+        this.teamList = new ArrayList<>();
+    }
+
+    /**
+     * Refresh the arena teams.
+     *
+     * @param conf the configuration instance
+     */
+    public void refreshTeams(FileConfiguration conf) {
+        this.teamList.clear();
+
+        for (int i = 0; i < 16; i++) {
+            ConfigurationSection configurationSection = conf.getConfigurationSection("Teams." + i);
+
+            if (configurationSection == null) {
+                continue;
+            }
+
+            this.teamList.add(new ArenaTeam(this,
+                    i,
+                    configurationSection.getString("Name"),
+                    configurationSection.getString("Colour"),
+                    configurationSection.getString("Spawn")));
+        }
     }
 
     /**
@@ -63,16 +91,16 @@ public class Arena {
             return;
         }
 
+        Clipboard clipboard = SchematicManager.load(this.name);
+        SchematicManager.paste(world, clipboard);
+
         for (Entity entity : world.getNearbyEntities(this.getBoundingBox())) {
-            if (entity instanceof Animals && entity instanceof Monster && entity.getType() == EntityType.DROPPED_ITEM) {
+            if (!(entity.getType() == EntityType.ITEM_FRAME && entity instanceof Animals && entity instanceof Monster && entity.getType() == EntityType.DROPPED_ITEM)) {
                 continue;
             }
 
             entity.remove();
         }
-
-        Clipboard clipboard = SchematicManager.load(this.name);
-        SchematicManager.paste(world, clipboard);
     }
 
     public void save(Player player) {
@@ -93,6 +121,21 @@ public class Arena {
         } catch (IOException e) {
             player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
         }
+    }
+
+    /**
+     * Get team by name.
+     *
+     * @param name the name of the team
+     */
+    public ArenaTeam getTeamByName(String name) {
+        for (ArenaTeam arenaTeam : this.teamList) {
+            if (arenaTeam.getName().equalsIgnoreCase(name)) {
+                return arenaTeam;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -200,4 +243,20 @@ public class Arena {
         return flagsMap;
     }
 
+    /**
+     * Gets the path to the arena config file.
+     *
+     * @return the arena config
+     */
+    public File getConfigFile() {
+        return Paths.get(BattleCTF.getInstance().getDataFolder().getAbsolutePath(), "arenas", name + ".yml").toFile();
+    }
+
+    /**
+     * Get team list
+     * @return the team list
+     */
+    public List<ArenaTeam> getTeamList() {
+        return teamList;
+    }
 }

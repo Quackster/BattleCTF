@@ -28,7 +28,9 @@ public class CommandHandler implements CommandExecutor {
         if (args[0].equalsIgnoreCase("select") ||
             args[0].equalsIgnoreCase("create") ||
             args[0].equalsIgnoreCase("build") ||
-            args[0].equalsIgnoreCase("save")) {
+            args[0].equalsIgnoreCase("save") ||
+            args[0].equalsIgnoreCase("reload") ||
+            args[0].equalsIgnoreCase("set")) {
 
             if (!player.isOp()) {
                 player.sendMessage(ChatColor.RED + "You do not have permission to perform this action");
@@ -56,7 +58,15 @@ public class CommandHandler implements CommandExecutor {
             return BuildCommand.onCommand(battlePlayer, player, args);
         }
 
-        return false;
+        if (args[0].equalsIgnoreCase("reload")) {
+            return ReloadCommand.onCommand(battlePlayer, player, args);
+        }
+
+        if (args[0].equalsIgnoreCase("set")) {
+            return SetCommand.onCommand(battlePlayer, player, args);
+        }
+
+        return true;
     }
 
 }
