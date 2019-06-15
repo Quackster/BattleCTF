@@ -5,6 +5,7 @@ import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.alexdev.battlectf.util.InventoryBase64;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -72,9 +73,30 @@ public class ArenaTeam {
         battlePlayer.setTeam(this);
         battlePlayer.setSurvivalLocation(player.getLocation().clone());
         battlePlayer.setSurvivalInventory(InventoryBase64.toBase64(player.getInventory()));
+        battlePlayer.setGameMode(player.getGameMode());
+        battlePlayer.setExp(player.getExp());
+        battlePlayer.setTotalExperience(player.getTotalExperience());
+        battlePlayer.setLevel(player.getLevel());
+
+        this.respawnPlayer(player);
+        player.teleport(this.spawn);
+    }
+
+    /**
+     * Respawn player handler
+     */
+    private void respawnPlayer(Player player) {
+        player.setFallDistance(0);
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setHealth(20);
+        player.setSaturation(20);
+        player.setExhaustion(0);
+        player.setTotalExperience(0);
+        player.setExp(0.0f);
+        player.setLevel(-99999);
+        player.setFoodLevel(20);
 
         this.arena.refreshInventory(player);
-        player.teleport(this.spawn);
     }
 
     /**
@@ -90,6 +112,11 @@ public class ArenaTeam {
 
         player.getInventory().clear();
         player.teleport(battlePlayer.getSurvivalLocation());
+        player.setFallDistance(0);
+        player.setGameMode(battlePlayer.getGameMode());
+        player.setExp(battlePlayer.getExp());
+        player.setTotalExperience(battlePlayer.getTotalExperience());
+        player.setLevel(battlePlayer.getLevel());
 
         Inventory inventory = InventoryBase64.fromBase64(battlePlayer.getSurvivalInventory());
         player.getInventory().setContents(inventory.getContents());

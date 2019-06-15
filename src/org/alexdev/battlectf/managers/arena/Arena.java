@@ -10,10 +10,7 @@ import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.alexdev.battlectf.managers.schematic.SchematicManager;
 import org.alexdev.battlectf.managers.team.TeamColour;
 import org.alexdev.battlectf.util.LocaleUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -104,29 +101,36 @@ public class Arena {
             return;
         }
 
+        Color teamColour = TeamColour.get(battlePlayer.getTeam().getChatColor());
+
+        if (teamColour == null) {
+            return;
+        }
+
         player.getInventory().clear();
+        player.sendMessage(ChatColor.ITALIC + "Refreshing inventory...");
 
         ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
         LeatherArmorMeta lam = (LeatherArmorMeta)lhelmet.getItemMeta();
-        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lam.setColor(teamColour);
         lhelmet.setItemMeta(lam);
         player.getInventory().setHelmet(lhelmet);
 
         lhelmet = new ItemStack(Material.LEATHER_BOOTS, 1);
         lam = (LeatherArmorMeta)lhelmet.getItemMeta();
-        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lam.setColor(teamColour);
         lhelmet.setItemMeta(lam);
         player.getInventory().setBoots(lhelmet);
 
         lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
         lam = (LeatherArmorMeta)lhelmet.getItemMeta();
-        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lam.setColor(teamColour);
         lhelmet.setItemMeta(lam);
         player.getInventory().setChestplate(lhelmet);
 
         lhelmet = new ItemStack(Material.LEATHER_LEGGINGS, 1);
         lam = (LeatherArmorMeta)lhelmet.getItemMeta();
-        lam.setColor(TeamColour.get(battlePlayer.getTeam().getChatColor()));
+        lam.setColor(teamColour);
         lhelmet.setItemMeta(lam);
         player.getInventory().setLeggings(lhelmet);
     }
@@ -183,14 +187,9 @@ public class Arena {
             return;
         }
 
-        if (!SchematicManager.save(player, world, this.name, this.getFirstPoint(), this.getSecondPoint())) {
-            return;
-        }
-
-        try {
-            ArenaManager.getInstance().createArena(player, name, this.getFirstPoint(), this.getSecondPoint());
-            player.sendMessage(LocaleUtil.getInstance().getArenaSaved(name));
-        } catch (IOException e) {
+        if (SchematicManager.save(player, world, this.name, this.getFirstPoint(), this.getSecondPoint())) {
+            player.sendMessage(LocaleUtil.getInstance().getArenaSaved(this.name));
+        } else{
             player.sendMessage(LocaleUtil.getInstance().getErrorOccurred());
         }
     }

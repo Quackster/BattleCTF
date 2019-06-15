@@ -2,6 +2,7 @@ package org.alexdev.battlectf.managers.players;
 
 import org.alexdev.battlectf.managers.arena.ArenaTeam;
 import org.alexdev.battlectf.util.attributes.BattleAttributable;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -12,6 +13,11 @@ public class BattlePlayer extends BattleAttributable {
 
     private String survivalInventory;
     private Location survivalLocation;
+    private GameMode gameMode;
+    private int level;
+
+    private float exp;
+    private int totalExperience;
 
     public BattlePlayer(Player player) {
         this.player = player;
@@ -52,6 +58,54 @@ public class BattlePlayer extends BattleAttributable {
     }
 
     /**
+     * Set the exp of the player before they joined to the team
+     * @return the experience
+     */
+    public float getExp() {
+        return exp;
+    }
+
+    /**
+     * Get the last location of the player before they joined to the team
+     * @param exp the exp
+     */
+    public void setExp(float exp) {
+        this.exp = exp;
+    }
+
+    /**
+     * Get the total exp of the player before they joined to the team
+     * @return the total exp
+     */
+    public int getTotalExperience() {
+        return totalExperience;
+    }
+
+    /**
+     * Set the total exp of the player before they joined to the team
+     * @param totalExperience the total experience
+     */
+    public void setTotalExperience(int totalExperience) {
+        this.totalExperience = totalExperience;
+    }
+
+    /**
+     * Get the exp to level before game start
+     * @return the exp to level
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * Set the exp to level before game start
+     * @param level the exp to level
+     */
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    /**
      * Get arena team.
      *
      * @return the team
@@ -76,5 +130,21 @@ public class BattlePlayer extends BattleAttributable {
      */
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Get the game mode before they joined the game
+     * @return the game mode
+     */
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    /**
+     * Set the game mode before they joined the game
+     * @param gameMode the game mode
+     */
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 }
