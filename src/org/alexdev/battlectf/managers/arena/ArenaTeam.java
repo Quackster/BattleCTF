@@ -17,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ArenaTeam {
     private int position;
@@ -31,7 +32,7 @@ public class ArenaTeam {
         this.arena = arena;
         this.name = name;
         this.chatColor = ChatColor.valueOf(colour);
-        this.teamPlayers = new ArrayList<>();
+        this.teamPlayers = new CopyOnWriteArrayList<>();
 
         String[] spawnValues = spawnCoordinates.split(",");
 

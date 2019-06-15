@@ -3,6 +3,7 @@ package org.alexdev.battlectf.listeners;
 import org.alexdev.battlectf.managers.arena.Arena;
 import org.alexdev.battlectf.managers.arena.ArenaFlags;
 import org.alexdev.battlectf.managers.arena.ArenaManager;
+import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +12,8 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
+
+import java.io.IOException;
 
 public class PlayerListener implements Listener {
     @EventHandler
@@ -23,6 +26,16 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (PlayerManager.getInstance().hasPlayer(event.getPlayer())) {
+            BattlePlayer battlePlayer = PlayerManager.getInstance().getPlayer(event.getPlayer());
+
+            if (battlePlayer.getTeam() != null) {
+                try {
+                    battlePlayer.getTeam().leaveTeam(event.getPlayer());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             PlayerManager.getInstance().removePlayer(event.getPlayer());
         }
     }

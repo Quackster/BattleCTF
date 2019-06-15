@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Arena {
     private String name;
@@ -58,7 +59,7 @@ public class Arena {
 
         }};
 
-        this.teamList = new ArrayList<>();
+        this.teamList = new CopyOnWriteArrayList<>();
     }
 
     /**
