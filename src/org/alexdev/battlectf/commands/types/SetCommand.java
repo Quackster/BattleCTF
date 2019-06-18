@@ -31,8 +31,29 @@ public class SetCommand {
         FileConfiguration conf = YamlConfiguration.loadConfiguration(arena.getConfigFile());
 
         switch (args[1]) {
-            case "addteam":
+            case "addteam": {
+                break;
+
+            }
+            case "region":
             {
+                if (args.length < 5) {
+                    player.sendMessage(ChatColor.RED + "/ctf set region [team] [flags] [name]");
+                    return true;
+                }
+
+                String teamName = args[2];
+                ArenaTeam team = arena.getTeamByName(teamName);
+
+                if (team == null) {
+                    player.sendMessage(LocaleUtil.getInstance().getTeamNotFound(teamName));
+                    return true;
+                }
+
+                team.setSpawn(player.getLocation().clone());
+                team.save();
+
+                player.sendMessage(LocaleUtil.getInstance().getTeamSaved(teamName));
                 break;
             }
             case "spawn":
