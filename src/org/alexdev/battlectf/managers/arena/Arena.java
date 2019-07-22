@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import net.minecraft.server.v1_14_R1.EntityPlayer;
 import org.alexdev.battlectf.BattleCTF;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
@@ -137,7 +138,6 @@ public class Arena {
         player.getInventory().setLeggings(lhelmet);
 
         for (ItemStack itemStack : this.spawnItems) {
-            System.out.println("test123");
             player.getInventory().addItem(itemStack.clone());
         }
 

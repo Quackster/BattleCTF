@@ -3,6 +3,7 @@ package org.alexdev.battlectf.managers.arena;
 import org.alexdev.battlectf.BattleCTF;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
+import org.alexdev.battlectf.util.ExperienceManager;
 import org.alexdev.battlectf.util.InventoryBase64;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -94,8 +95,10 @@ public class ArenaTeam {
         player.setExhaustion(0);
         player.setTotalExperience(0);
         player.setExp(0.0f);
-        player.setLevel(-99999);
         player.setFoodLevel(20);
+
+        ExperienceManager experienceManager = new ExperienceManager(player);
+        experienceManager.setExp(0);
 
         this.arena.refreshInventory(player);
     }
@@ -120,7 +123,9 @@ public class ArenaTeam {
         player.setLevel(battlePlayer.getLevel());
 
         Inventory inventory = InventoryBase64.fromBase64(battlePlayer.getSurvivalInventory());
+
         player.getInventory().setContents(inventory.getContents());
+        player.updateInventory();
 
         battlePlayer.setTeam(null);
     }
