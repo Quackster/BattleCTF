@@ -1,0 +1,47 @@
+Arena:
+  Name: arena
+  World: world
+  Author: AlexTheAussie
+  Flags:
+  - ALLOW_EXPLOSIONS:true
+  - ALLOW_LEAF_DECAY:true
+  - ALLOW_FIRE_IGNITE:true
+  - ALLOW_FIRE_BURN:true
+  - ALLOW_GRASS_SPREAD:true
+  - ALLOW_WATER_FLOW:true
+  - ALLOW_FIRE_SPREAD:true
+  - ALLOW_MOB_SPAWNING:false
+  - ALLOW_BLOCK_BREAKING:false
+  - ALLOW_BLOCK_PLACING:false
+  - ALLOW_ANIMAL_SPAWNING:false
+  - ALLOW_LAVA_FLOW:true
+  - ALLOW_VINE_SPREAD:false
+  - ALLOW_MUSHROOM_SPREAD:false
+Region:
+  MinX: -314
+  MinY: 28
+  MinZ: -403
+  MaxX: -237
+  MaxY: 90
+  MaxZ: -360
+Items:
+  - IRON_SWORD,1
+  - BOW,1|ARROW_INFINITE,1
+  - IRON_AXE,1
+  - IRON_PICKAXE,1
+  - OAK_LOG,64
+  - GLASS,64
+  - COOKED_BEEF,12
+  - GOLDEN_APPLE,3
+  - ARROW,1
+  - DIAMOND_BLOCK,4
+  - IRON_BLOCK,1
+Teams:
+  '0':
+    Name: Red
+    Colour: RED
+    Spawn: -309.6575414056237,76.0,-398.44753326546896,-2.8827643,2.2504854
+  '1':
+    Name: Blue
+    Colour: BLUE
+    Spawn: -240.35269716025044,76.0,-363.1845246585374,-184.8323,1.7997468
