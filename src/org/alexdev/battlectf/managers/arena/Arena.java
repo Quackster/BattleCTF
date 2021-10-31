@@ -4,7 +4,7 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import net.minecraft.server.v1_14_R1.EntityPlayer;
+import net.minecraft.server.level.EntityPlayer;
 import org.alexdev.battlectf.BattleCTF;
 import org.alexdev.battlectf.managers.players.BattlePlayer;
 import org.alexdev.battlectf.managers.players.PlayerManager;
